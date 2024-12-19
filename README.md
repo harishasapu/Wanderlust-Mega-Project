@@ -130,7 +130,7 @@ sudo apt-get install jenkins -y
   - <b>Associate IAM OIDC Provider (Master machine)</b>
   ```bash
   eksctl utils associate-iam-oidc-provider \
-    --region us-east-2 \
+    --region ap-south-1 \
     --cluster wanderlust \
     --approve
   ```
