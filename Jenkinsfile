@@ -1,18 +1,15 @@
 @Library('Shared') _
 pipeline {
     agent any
-    
     environment{
         SONAR_HOME = tool "Sonar"
     }
-    
     parameters {
         string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
         string(name: 'BACKEND_DOCKER_TAG', defaultValue: '', description: 'Setting docker image for latest push')
     }
-    
     stages {
-        stage("Validate Parameters") {
+        stage("Validate Parameters"){
             steps {
                 script {
                     if (params.FRONTEND_DOCKER_TAG == '' || params.BACKEND_DOCKER_TAG == '') {
@@ -28,15 +25,13 @@ pipeline {
                 }
             }
         }
-        
-        stage('Git: Code Checkout') {
+        stage('Git: Code Checkout'){
             steps {
                 script{
                     code_checkout("https://github.com/harishasapu/Wanderlust-Mega-Project.git","main")
                 }
             }
         }
-        
         stage("Trivy: Filesystem scan"){
             steps{
                 script{
@@ -44,7 +39,6 @@ pipeline {
                 }
             }
         }
-
         stage("OWASP: Dependency check"){
             steps{
                 script{
@@ -52,7 +46,6 @@ pipeline {
                 }
             }
         }
-        
         stage("SonarQube: Code Analysis"){
             steps{
                 script{
@@ -60,7 +53,6 @@ pipeline {
                 }
             }
         }
-        
         stage("SonarQube: Code Quality Gates"){
             steps{
                 script{
@@ -68,7 +60,6 @@ pipeline {
                 }
             }
         }
-        
         stage('Exporting environment variables') {
             parallel{
                 stage("Backend env setup"){
@@ -80,7 +71,6 @@ pipeline {
                         }
                     }
                 }
-                
                 stage("Frontend env setup"){
                     steps {
                         script{
@@ -92,7 +82,6 @@ pipeline {
                 }
             }
         }
-        
         stage("Docker: Build Images"){
             steps{
                 script{
@@ -106,7 +95,6 @@ pipeline {
                 }
             }
         }
-        
         stage("Docker: Push to DockerHub"){
             steps{
                 script{
